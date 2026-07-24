@@ -1,5 +1,5 @@
 from database.database import Base, engine
-from scanner.s3_scanner import S3Scanner
+from scanner.manager import ScannerManager
 
 
 def create_database():
@@ -14,24 +14,24 @@ def main():
 
     create_database()
 
-    scanner = S3Scanner()
+    manager = ScannerManager()
 
-    findings = scanner.scan()
+    findings = manager.run()
 
-    print("\nFindings\n")
+    print("\n" + "=" * 60)
+    print("SCAN COMPLETE")
+    print("=" * 60)
 
     if not findings:
+        print("No findings detected.")
+        return
 
-        print("No issues found.")
+    for index, finding in enumerate(findings, start=1):
 
-    else:
+        print(f"\nFinding #{index}")
 
-        for finding in findings:
-
-            print("-" * 50)
-
-            for key, value in finding.items():
-                print(f"{key}: {value}")
+        for key, value in finding.items():
+            print(f"{key}: {value}")
 
 
 if __name__ == "__main__":
