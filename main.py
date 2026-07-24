@@ -1,4 +1,6 @@
-from database.database import Base, engine
+from database.database import Base, SessionLocal, engine
+from database.repository import Repository
+
 from scanner.manager import ScannerManager
 
 
@@ -8,30 +10,23 @@ def create_database():
 
 def main():
 
-    print("=" * 60)
-    print("Cloud Misconfiguration Scanner")
-    print("=" * 60)
-
     create_database()
 
     manager = ScannerManager()
 
     findings = manager.run()
 
-    print("\n" + "=" * 60)
-    print("SCAN COMPLETE")
-    print("=" * 60)
+    db = SessionLocal()
 
-    if not findings:
-        print("No findings detected.")
-        return
+    repo = Repository(db)
 
-    for index, finding in enumerate(findings, start=1):
+    scan = repo.create_scan()
 
-        print(f"\nFinding #{index}")
+    repo.save_findings(scan.id, findings)
 
-        for key, value in finding.items():
-            print(f"{key}: {value}")
+    print(f"\nSaved {len(findings)} findings to SQLite.")
+
+    db.close()
 
 
 if __name__ == "__main__":
