@@ -1,3 +1,14 @@
+"""
+EC2 Security Scanner
+
+Checks:
+1. SSH open to the Internet
+2. RDP open to the Internet
+3. Public IP addresses
+"""
+
+from botocore.exceptions import ClientError
+
 from scanner.aws_connector import AWSConnector
 from scanner.base_scanner import BaseScanner
 
@@ -5,78 +16,89 @@ from scanner.base_scanner import BaseScanner
 class EC2Scanner(BaseScanner):
 
     def __init__(self):
-
         super().__init__()
-
         self.ec2 = AWSConnector().get_client("ec2")
 
     def scan(self):
-
+        """
+        Run all EC2 security checks.
+        """
         print("\nScanning EC2...\n")
 
         self.check_security_groups()
-
         self.check_public_ips()
 
         return self.findings
 
     def check_security_groups(self):
+        """
+        Detect SSH/RDP open to the world.
+        """
+        try:
+            response = self.ec2.describe_security_groups()
 
-        groups = self.ec2.describe_security_groups()[
-            "SecurityGroups"
-        ]
+            for group in response["SecurityGroups"]:
 
-        for group in groups:
+                group_name = group["GroupName"]
 
-            for permission in group["IpPermissions"]:
+                print(f"Checking Security Group: {group_name}")
 
-                port = permission.get("FromPort")
+                for permission in group.get("IpPermissions", []):
 
-                for ip in permission.get("IpRanges", []):
+                    from_port = permission.get("FromPort")
+                    to_port = permission.get("ToPort")
 
-                    if ip["CidrIp"] != "0.0.0.0/0":
+                    for ip_range in permission.get("IpRanges", []):
 
-                        continue
+                        cidr = ip_range.get("CidrIp")
 
-                    if port == 22:
+                        if cidr != "0.0.0.0/0":
+                            continue
 
-                        self.add_finding(
-                            "EC2",
-                            group["GroupName"],
-                            "Critical",
-                            "SSH Open",
-                            "Port 22 open to everyone.",
-                            "Restrict access."
-                        )
+                        if from_port == 22 and to_port == 22:
+                            self.add_finding(
+                                "EC2",
+                                group_name,
+                                "Critical",
+                                "SSH Open to the Internet",
+                                "Security Group allows SSH (22) from 0.0.0.0/0.",
+                                "Restrict SSH access to trusted IP addresses."
+                            )
 
-                    elif port == 3389:
+                        elif from_port == 3389 and to_port == 3389:
+                            self.add_finding(
+                                "EC2",
+                                group_name,
+                                "Critical",
+                                "RDP Open to the Internet",
+                                "Security Group allows RDP (3389) from 0.0.0.0/0.",
+                                "Restrict RDP access to trusted IP addresses."
+                            )
 
-                        self.add_finding(
-                            "EC2",
-                            group["GroupName"],
-                            "Critical",
-                            "RDP Open",
-                            "Port 3389 open to everyone.",
-                            "Restrict access."
-                        )
+        except ClientError as e:
+            print(f"EC2 Error: {e}")
 
     def check_public_ips(self):
+        """
+        Detect EC2 instances with public IP addresses.
+        """
+        try:
+            response = self.ec2.describe_instances()
 
-        reservations = self.ec2.describe_instances()[
-            "Reservations"
-        ]
+            for reservation in response["Reservations"]:
 
-        for reservation in reservations:
+                for instance in reservation["Instances"]:
 
-            for instance in reservation["Instances"]:
+                    if "PublicIpAddress" in instance:
 
-                if "PublicIpAddress" in instance:
+                        self.add_finding(
+                            "EC2",
+                            instance["InstanceId"],
+                            "Medium",
+                            "Public IP Attached",
+                            f"Instance has public IP {instance['PublicIpAddress']}.",
+                            "Use private subnets when possible."
+                        )
 
-                    self.add_finding(
-                        "EC2",
-                        instance["InstanceId"],
-                        "Medium",
-                        "Public IP Attached",
-                        "Instance has a public IP.",
-                        "Use a private subnet if possible."
-                    )
+        except ClientError as e:
+            print(f"EC2 Error: {e}")
