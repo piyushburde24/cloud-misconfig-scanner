@@ -1,16 +1,15 @@
+# Environment variables
+.env
+
+# Database
+scanner.db
+
+# Virtual environment
 venv/
+
+# Python
 __pycache__/
 *.pyc
 
-.env
-
-*.db
-
-output/
-
-.idea/
+# VS Code
 .vscode/
-
-*.log
-
-.pytest_cache/

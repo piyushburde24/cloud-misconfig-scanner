@@ -15,10 +15,7 @@ class Repository:
         self.db = db
 
     def create_scan(self):
-
-        scan = ScanRun(
-            status="Completed"
-        )
+        scan = ScanRun(status="Completed")
 
         self.db.add(scan)
         self.db.commit()
@@ -27,6 +24,11 @@ class Repository:
         return scan
 
     def save_findings(self, scan_id, findings):
+        """
+        Save scanner findings and return the database records.
+        """
+
+        records = []
 
         for finding in findings:
 
@@ -41,5 +43,28 @@ class Repository:
             )
 
             self.db.add(record)
+            records.append(record)
+
+        self.db.commit()
+
+        for record in records:
+            self.db.refresh(record)
+
+        return records
+
+    def update_ai_analysis(self, finding_id: int, ai_result: dict):
+        """
+        Update a finding with Gemini AI analysis.
+        """
+
+        finding = self.db.get(Finding, finding_id)
+
+        if not finding:
+            return
+
+        finding.ai_explanation = ai_result.get("explanation")
+        finding.business_impact = ai_result.get("business_impact")
+        finding.console_remediation = ai_result.get("console_remediation")
+        finding.cli_remediation = ai_result.get("cli_remediation")
 
         self.db.commit()
