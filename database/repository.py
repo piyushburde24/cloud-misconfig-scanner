@@ -68,3 +68,19 @@ class Repository:
         finding.cli_remediation = ai_result.get("cli_remediation")
 
         self.db.commit()
+
+    def get_scan(self, scan_id: int):
+        """
+        Retrieve a scan by its ID.
+        """
+        return self.db.get(ScanRun, scan_id)
+
+    def get_findings(self, scan_id: int):
+        """
+        Retrieve all findings for a scan.
+        """
+        return (
+            self.db.query(Finding)
+            .filter(Finding.scan_id == scan_id)
+            .all()
+        )

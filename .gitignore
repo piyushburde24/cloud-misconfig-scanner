@@ -1,15 +1,22 @@
-# Environment variables
-.env
-
-# Database
-scanner.db
-
-# Virtual environment
-venv/
-
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
 
-# VS Code
-.vscode/
+# Virtual Environment
+venv/
+
+# Environment Variables
+.env
+
+# SQLite
+scanner.db
+
+# Reports
+*.pdf
+
+# Logs
+*.log
+
+# OS
+.DS_Store
