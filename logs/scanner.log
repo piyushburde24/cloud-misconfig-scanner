@@ -1,0 +1,12 @@
+2026-07-26 23:28:59,737 | INFO     | Application started
+2026-07-26 23:28:59,738 | WARNING  | This is a warning
+2026-07-26 23:28:59,738 | ERROR    | This is an error
+2026-07-26 23:33:27,642 | INFO     | Application started
+2026-07-26 23:33:27,642 | WARNING  | This is a warning
+2026-07-26 23:33:27,643 | ERROR    | This is an error
+2026-07-26 23:35:42,062 | INFO     | Application started
+2026-07-26 23:35:42,063 | WARNING  | This is a warning
+2026-07-26 23:35:42,063 | ERROR    | This is an error
+2026-07-26 23:36:52 | INFO     | Application started
+2026-07-26 23:36:52 | WARNING  | This is a warning
+2026-07-26 23:36:52 | ERROR    | This is an error
