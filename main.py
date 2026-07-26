@@ -4,6 +4,8 @@ from database.repository import Repository
 from scanner.manager import ScannerManager
 from ai.gemini_client import GeminiClient
 
+from security.risk_score import RiskScoreCalculator
+
 from config.logging_config import logger
 
 
@@ -90,24 +92,35 @@ def main():
         logger.info("Saving AI analysis into database...")
 
         for result in ai_results:
-
-            repo.update_ai_analysis(
-                result["id"],
-                result
-            )
+            repo.update_ai_analysis(result["id"], result)
 
         logger.info("Database updated successfully.")
+
+        # -----------------------------------
+        # Calculate Risk Score
+        # -----------------------------------
+        logger.info("Calculating overall security score...")
+
+        risk = RiskScoreCalculator.calculate(records)
+
+        logger.info("=" * 60)
+        logger.info("Security Summary")
+        logger.info("=" * 60)
+
+        logger.info(f"Overall Security Score : {risk['score']}/100")
+
+        for severity in ["Critical", "High", "Medium", "Low"]:
+            count = risk["counts"].get(severity, 0)
+            logger.info(f"{severity:<10}: {count}")
 
         logger.info("=" * 60)
         logger.info("Cloud Scan Finished Successfully")
         logger.info("=" * 60)
 
     except Exception as e:
-
         logger.exception(f"Application failed: {e}")
 
     finally:
-
         db.close()
         logger.info("Database connection closed.")
 

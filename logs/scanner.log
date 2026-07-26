@@ -10,3 +10,179 @@
 2026-07-26 23:36:52 | INFO     | Application started
 2026-07-26 23:36:52 | WARNING  | This is a warning
 2026-07-26 23:36:52 | ERROR    | This is an error
+2026-07-26 23:49:27 | INFO     | ============================================================
+2026-07-26 23:49:27 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-26 23:49:27 | INFO     | ============================================================
+2026-07-26 23:49:27 | INFO     | Starting AWS security scan...
+2026-07-26 23:49:27 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-26 23:49:32 | INFO     | Scan completed. 3 findings discovered.
+2026-07-26 23:49:33 | INFO     | 3 findings saved to SQLite database.
+2026-07-26 23:49:33 | INFO     | Preparing findings for Gemini AI...
+2026-07-26 23:49:33 | INFO     | Sending findings to Gemini AI...
+2026-07-26 23:49:33 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-26 23:49:46 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-26 23:49:46 | INFO     | Gemini AI analysis completed successfully.
+2026-07-26 23:49:46 | INFO     | Saving AI analysis into database...
+2026-07-26 23:49:46 | INFO     | Database updated successfully.
+2026-07-26 23:49:46 | INFO     | Calculating overall security score...
+2026-07-26 23:49:46 | INFO     | ============================================================
+2026-07-26 23:49:46 | INFO     | Security Summary
+2026-07-26 23:49:46 | INFO     | ============================================================
+2026-07-26 23:49:46 | INFO     | Overall Security Score : 53/100
+2026-07-26 23:49:46 | INFO     | Critical  : 1
+2026-07-26 23:49:46 | INFO     | High      : 1
+2026-07-26 23:49:46 | INFO     | Medium    : 1
+2026-07-26 23:49:46 | INFO     | Low       : 0
+2026-07-26 23:49:46 | INFO     | ============================================================
+2026-07-26 23:49:46 | INFO     | Cloud Scan Finished Successfully
+2026-07-26 23:49:46 | INFO     | ============================================================
+2026-07-26 23:49:46 | INFO     | Database connection closed.
+2026-07-26 23:54:04 | INFO     | ============================================================
+2026-07-26 23:54:04 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-26 23:54:04 | INFO     | ============================================================
+2026-07-26 23:54:04 | INFO     | Starting AWS security scan...
+2026-07-26 23:54:04 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-26 23:54:10 | INFO     | Scan completed. 3 findings discovered.
+2026-07-26 23:54:10 | INFO     | 3 findings saved to SQLite database.
+2026-07-26 23:54:10 | INFO     | Preparing findings for Gemini AI...
+2026-07-26 23:54:10 | INFO     | Sending findings to Gemini AI...
+2026-07-26 23:54:10 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-26 23:54:11 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 404 Not Found"
+2026-07-26 23:54:11 | ERROR    | Gemini API request failed.
+Traceback (most recent call last):
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/ai/gemini_client.py", line 41, in analyze_findings
+    response = self.client.models.generate_content(
+        model="gemini-2.5-flash",
+    ...<4 lines>...
+        ),
+    )
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/models.py", line 6641, in generate_content
+    response = self._generate_content(
+        model=model, contents=contents, config=parsed_config_to_call
+    )
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/models.py", line 5067, in _generate_content
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/_api_client.py", line 1700, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/_api_client.py", line 1487, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 443, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 395, in __get_result
+    raise self._exception
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/_api_client.py", line 1464, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}
+2026-07-26 23:54:11 | INFO     | Gemini AI analysis completed successfully.
+2026-07-26 23:54:11 | INFO     | Saving AI analysis into database...
+2026-07-26 23:54:11 | INFO     | Database updated successfully.
+2026-07-26 23:54:11 | INFO     | Calculating overall security score...
+2026-07-26 23:54:11 | INFO     | ============================================================
+2026-07-26 23:54:11 | INFO     | Security Summary
+2026-07-26 23:54:11 | INFO     | ============================================================
+2026-07-26 23:54:11 | INFO     | Overall Security Score : 53/100
+2026-07-26 23:54:11 | INFO     | Critical  : 1
+2026-07-26 23:54:11 | INFO     | High      : 1
+2026-07-26 23:54:11 | INFO     | Medium    : 1
+2026-07-26 23:54:11 | INFO     | Low       : 0
+2026-07-26 23:54:11 | INFO     | ============================================================
+2026-07-26 23:54:11 | INFO     | Cloud Scan Finished Successfully
+2026-07-26 23:54:11 | INFO     | ============================================================
+2026-07-26 23:54:11 | INFO     | Database connection closed.
+2026-07-26 23:58:42 | INFO     | ============================================================
+2026-07-26 23:58:42 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-26 23:58:42 | INFO     | ============================================================
+2026-07-26 23:58:42 | INFO     | Starting AWS security scan...
+2026-07-26 23:58:42 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-26 23:58:48 | INFO     | Scan completed. 3 findings discovered.
+2026-07-26 23:58:48 | INFO     | 3 findings saved to SQLite database.
+2026-07-26 23:58:48 | INFO     | Preparing findings for Gemini AI...
+2026-07-26 23:58:48 | INFO     | Sending findings to Gemini AI...
+2026-07-26 23:58:48 | INFO     | Sending request to Gemini API...
+2026-07-26 23:58:48 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-26 23:58:49 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 404 Not Found"
+2026-07-26 23:58:49 | ERROR    | Gemini API request failed.
+Traceback (most recent call last):
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/ai/gemini_client.py", line 42, in analyze_findings
+    response = self.client.models.generate_content(
+        model="gemini-2.5-flash",
+    ...<4 lines>...
+        ),
+    )
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/models.py", line 6641, in generate_content
+    response = self._generate_content(
+        model=model, contents=contents, config=parsed_config_to_call
+    )
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/models.py", line 5067, in _generate_content
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/_api_client.py", line 1700, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/_api_client.py", line 1487, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 443, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 395, in __get_result
+    raise self._exception
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/_api_client.py", line 1464, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/errors.py", line 155, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/venv/lib/python3.14/site-packages/google/genai/errors.py", line 184, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}
+2026-07-26 23:58:49 | INFO     | Gemini AI analysis completed successfully.
+2026-07-26 23:58:49 | INFO     | Saving AI analysis into database...
+2026-07-26 23:58:49 | INFO     | Database updated successfully.
+2026-07-26 23:58:49 | INFO     | Calculating overall security score...
+2026-07-26 23:58:49 | INFO     | ============================================================
+2026-07-26 23:58:49 | INFO     | Security Summary
+2026-07-26 23:58:49 | INFO     | ============================================================
+2026-07-26 23:58:49 | INFO     | Overall Security Score : 53/100
+2026-07-26 23:58:49 | INFO     | Critical  : 1
+2026-07-26 23:58:49 | INFO     | High      : 1
+2026-07-26 23:58:49 | INFO     | Medium    : 1
+2026-07-26 23:58:49 | INFO     | Low       : 0
+2026-07-26 23:58:49 | INFO     | ============================================================
+2026-07-26 23:58:49 | INFO     | Cloud Scan Finished Successfully
+2026-07-26 23:58:49 | INFO     | ============================================================
+2026-07-26 23:58:49 | INFO     | Database connection closed.

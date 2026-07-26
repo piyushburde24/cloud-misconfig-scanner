@@ -8,28 +8,39 @@ from google import genai
 from google.genai import types
 
 from config.config import Config
+from config.logging_config import logger
+
 from ai.prompts import build_prompt
 
 
 class GeminiClient:
+    """
+    Handles communication with the Gemini API.
+    """
+
     def __init__(self):
         if not Config.GEMINI_API_KEY:
             raise ValueError(
                 "GEMINI_API_KEY is missing. Check your .env file."
             )
 
-        self.client = genai.Client(api_key=Config.GEMINI_API_KEY)
+        self.client = genai.Client(
+            api_key=Config.GEMINI_API_KEY
+        )
 
-    def analyze_findings(self, findings: list[dict]):
+    def analyze_findings(self, findings: list[dict]) -> list[dict]:
         """
-        Send all findings to Gemini and return parsed JSON.
+        Send findings to Gemini and return structured JSON.
         """
 
         prompt = build_prompt(findings)
 
         try:
+
+            logger.info("Sending request to Gemini API...")
+
             response = self.client.models.generate_content(
-                model="gemini-3.5-flash",
+                model="gemini-2.5-flash",
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     temperature=0.2,
@@ -37,12 +48,51 @@ class GeminiClient:
                 ),
             )
 
-            return json.loads(response.text)
+            if not response.text:
+                logger.error("Gemini returned an empty response.")
+                return []
 
-        except json.JSONDecodeError as e:
-            print(f"Failed to parse Gemini response: {e}")
-            return []
+            text = response.text.strip()
 
-        except Exception as e:
-            print(f"Gemini API Error: {e}")
+            # Remove Markdown code fences if Gemini accidentally returns them
+            if text.startswith("```json"):
+                text = text.replace("```json", "", 1)
+
+            if text.startswith("```"):
+                text = text.replace("```", "", 1)
+
+            if text.endswith("```"):
+                text = text[:-3]
+
+            text = text.strip()
+
+            logger.info("Gemini response received successfully.")
+
+            try:
+                data = json.loads(text)
+
+                if not isinstance(data, list):
+                    logger.error("Gemini response is not a JSON array.")
+                    logger.error(text)
+                    return []
+
+                logger.info(
+                    f"Successfully parsed {len(data)} AI analysis results."
+                )
+
+                return data
+
+            except json.JSONDecodeError:
+
+                logger.exception("Failed to parse Gemini JSON response.")
+
+                logger.error("Raw Gemini Response:")
+                logger.error(text)
+
+                return []
+
+        except Exception:
+
+            logger.exception("Gemini API request failed.")
+
             return []

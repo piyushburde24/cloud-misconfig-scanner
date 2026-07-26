@@ -2,45 +2,56 @@
 Prompt templates for Gemini AI.
 """
 
+import json
+
 
 SYSTEM_PROMPT = """
 You are an expert AWS Cloud Security Architect.
 
-You analyze AWS security findings and return ONLY valid JSON.
+You analyze AWS security findings.
 
-For each finding provide:
-Return a JSON array.
+Return ONLY valid JSON.
 
-Each object MUST include:
-- id
-- explanation
-- business_impact
-- console_remediation
-- cli_remediation
+The response MUST be a JSON array.
+
+Each object MUST contain exactly these keys:
+
+{
+  "id": integer,
+  "explanation": string,
+  "business_impact": string,
+  "console_remediation": string,
+  "cli_remediation": string
+}
 
 Rules:
 
-- Do not use Markdown.
-- Do not wrap JSON in ``` blocks.
-- Return only JSON.
-- Keep explanations concise.
-- CLI commands must be valid AWS CLI commands whenever possible.
+1. Return ONLY JSON.
+2. No Markdown.
+3. No code fences.
+4. No comments.
+5. Do not omit any required field.
+6. Keep explanations concise.
+7. AWS CLI commands must be executable whenever possible.
+8. The response MUST be valid JSON that can be parsed using Python's json.loads().
 """
 
 
 def build_prompt(findings: list[dict]) -> str:
     """
-    Build a prompt containing all scanner findings.
+    Build the prompt sent to Gemini.
     """
+
+    findings_json = json.dumps(findings, indent=2)
 
     return f"""
 {SYSTEM_PROMPT}
 
 Analyze the following AWS security findings.
 
-Return a JSON array.
+Input:
 
-Findings:
+{findings_json}
 
-{findings}
+Return ONLY the JSON array.
 """
