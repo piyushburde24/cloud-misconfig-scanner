@@ -806,3 +806,33 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 22 column 4 (char 30
 2026-07-27 11:22:14 | INFO     | Cloud Scan Finished Successfully
 2026-07-27 11:22:14 | INFO     | ============================================================
 2026-07-27 11:22:14 | INFO     | Database connection closed.
+2026-07-27 13:06:31 | INFO     | ============================================================
+2026-07-27 13:06:31 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-27 13:06:31 | INFO     | ============================================================
+2026-07-27 13:06:31 | INFO     | Starting AWS security scan...
+2026-07-27 13:06:31 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-27 13:06:38 | INFO     | Scan completed. 3 findings discovered.
+2026-07-27 13:06:38 | INFO     | 3 findings saved to SQLite database.
+2026-07-27 13:06:38 | INFO     | Preparing findings for Gemini AI...
+2026-07-27 13:06:38 | INFO     | Sending findings to Gemini AI...
+2026-07-27 13:06:38 | INFO     | Sending request to Gemini API...
+2026-07-27 13:06:38 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 13:06:46 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 13:06:46 | INFO     | Gemini response received successfully.
+2026-07-27 13:06:46 | INFO     | Successfully parsed 3 AI analysis results.
+2026-07-27 13:06:46 | INFO     | Gemini AI analysis completed successfully.
+2026-07-27 13:06:46 | INFO     | Saving AI analysis into database...
+2026-07-27 13:06:46 | INFO     | Database updated successfully.
+2026-07-27 13:06:46 | INFO     | Calculating overall security score...
+2026-07-27 13:06:46 | INFO     | ============================================================
+2026-07-27 13:06:46 | INFO     | Security Summary
+2026-07-27 13:06:46 | INFO     | ============================================================
+2026-07-27 13:06:46 | INFO     | Overall Security Score : 53/100
+2026-07-27 13:06:46 | INFO     | Critical  : 1
+2026-07-27 13:06:46 | INFO     | High      : 1
+2026-07-27 13:06:46 | INFO     | Medium    : 1
+2026-07-27 13:06:46 | INFO     | Low       : 0
+2026-07-27 13:06:46 | INFO     | ============================================================
+2026-07-27 13:06:46 | INFO     | Cloud Scan Finished Successfully
+2026-07-27 13:06:46 | INFO     | ============================================================
+2026-07-27 13:06:46 | INFO     | Database connection closed.
