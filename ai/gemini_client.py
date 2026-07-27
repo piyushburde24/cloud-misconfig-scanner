@@ -19,6 +19,7 @@ class GeminiClient:
     """
 
     def __init__(self):
+
         if not Config.GEMINI_API_KEY:
             raise ValueError(
                 "GEMINI_API_KEY is missing. Check your .env file."
@@ -54,7 +55,7 @@ class GeminiClient:
 
             text = response.text.strip()
 
-            # Remove Markdown code fences if Gemini accidentally returns them
+            # Remove Markdown code fences
             if text.startswith("```json"):
                 text = text.replace("```json", "", 1)
 
@@ -68,11 +69,21 @@ class GeminiClient:
 
             logger.info("Gemini response received successfully.")
 
+            # Attempt to repair incomplete JSON array
+            if text.startswith("[") and not text.endswith("]"):
+                logger.warning(
+                    "Gemini returned incomplete JSON. Attempting repair."
+                )
+                text += "]"
+
             try:
+
                 data = json.loads(text)
 
                 if not isinstance(data, list):
-                    logger.error("Gemini response is not a JSON array.")
+                    logger.error(
+                        "Gemini response is not a JSON array."
+                    )
                     logger.error(text)
                     return []
 
@@ -82,9 +93,11 @@ class GeminiClient:
 
                 return data
 
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as e:
 
-                logger.exception("Failed to parse Gemini JSON response.")
+                logger.exception(
+                    f"Failed to parse Gemini JSON response: {e}"
+                )
 
                 logger.error("Raw Gemini Response:")
                 logger.error(text)

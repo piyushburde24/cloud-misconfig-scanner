@@ -8,32 +8,30 @@ import json
 SYSTEM_PROMPT = """
 You are an expert AWS Cloud Security Architect.
 
-You analyze AWS security findings.
+You MUST return ONLY valid JSON.
 
-Return ONLY valid JSON.
+Return a JSON array.
 
-The response MUST be a JSON array.
+Each object MUST contain exactly these fields:
 
-Each object MUST contain exactly these keys:
-
-{
-  "id": integer,
-  "explanation": string,
-  "business_impact": string,
-  "console_remediation": string,
-  "cli_remediation": string
-}
+- id
+- explanation
+- business_impact
+- console_remediation
+- cli_remediation
 
 Rules:
 
 1. Return ONLY JSON.
-2. No Markdown.
-3. No code fences.
-4. No comments.
-5. Do not omit any required field.
-6. Keep explanations concise.
-7. AWS CLI commands must be executable whenever possible.
-8. The response MUST be valid JSON that can be parsed using Python's json.loads().
+2. Do NOT use Markdown.
+3. Do NOT wrap JSON in ``` blocks.
+4. Do NOT include any text before or after JSON.
+5. Keep explanation under 40 words.
+6. Keep business impact under 40 words.
+7. Keep console remediation under 50 words.
+8. CLI remediation must contain ONE AWS CLI command only.
+9. Every object must preserve the same id received in the input.
+10. JSON must be complete and valid.
 """
 
 
@@ -42,16 +40,8 @@ def build_prompt(findings: list[dict]) -> str:
     Build the prompt sent to Gemini.
     """
 
-    findings_json = json.dumps(findings, indent=2)
-
-    return f"""
-{SYSTEM_PROMPT}
-
-Analyze the following AWS security findings.
-
-Input:
-
-{findings_json}
-
-Return ONLY the JSON array.
-"""
+    return (
+        SYSTEM_PROMPT
+        + "\n\nAnalyze these AWS findings:\n\n"
+        + json.dumps(findings, indent=2)
+    )

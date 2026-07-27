@@ -680,3 +680,129 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 22 column 4 (char 31
 2026-07-27 10:29:45 | INFO     | Database connection closed.
 2026-07-27 10:29:49 | INFO     | Sending request to Gemini API...
 2026-07-27 10:29:49 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 11:17:03 | INFO     | ============================================================
+2026-07-27 11:17:03 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-27 11:17:03 | INFO     | ============================================================
+2026-07-27 11:17:03 | INFO     | Starting AWS security scan...
+2026-07-27 11:17:03 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-27 11:17:09 | INFO     | Scan completed. 3 findings discovered.
+2026-07-27 11:17:09 | INFO     | 3 findings saved to SQLite database.
+2026-07-27 11:17:09 | INFO     | Preparing findings for Gemini AI...
+2026-07-27 11:17:09 | INFO     | Sending findings to Gemini AI...
+2026-07-27 11:17:09 | INFO     | Sending request to Gemini API...
+2026-07-27 11:17:09 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 11:17:19 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 11:17:19 | INFO     | Gemini response received successfully.
+2026-07-27 11:17:19 | ERROR    | Failed to parse Gemini JSON response.
+Traceback (most recent call last):
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/ai/gemini_client.py", line 72, in analyze_findings
+    data = json.loads(text)
+  File "/usr/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting ',' delimiter: line 22 column 4 (char 3005)
+2026-07-27 11:17:19 | ERROR    | Raw Gemini Response:
+2026-07-27 11:17:19 | ERROR    | [
+  {
+    "id": 10,
+    "explanation": "The IAM user 'piyushburde24' has console access but Multi-Factor Authentication (MFA) is not enabled, which violates security best practices.",
+    "business_impact": "Without MFA, compromised user credentials can lead to unauthorized access to the AWS account, potentially resulting in data exfiltration, resource destruction, or unauthorized financial charges.",
+    "console_remediation": "Sign in to the AWS Management Console, navigate to the IAM service, click on 'Users' in the left navigation pane, select 'piyushburde24', go to the 'Security credentials' tab, locate 'Multi-factor authentication (MFA)', click 'Assign MFA device', and follow the wizard to register a virtual or physical MFA device.",
+    "cli_remediation": "aws iam create-virtual-mfa-device --virtual-mfa-device-name piyushburde24-MFA --outfile QRCode.png --bootstrap-method QRCodePNG && aws iam enable-mfa-device --user-name piyushburde24 --serial-number arn:aws:iam::123456789012:mfa/piyushburde24-MFA --authentication-code-1 123456 --authentication-code-2 789012"
+  },
+  {
+    "id": 11,
+    "explanation": "The IAM user 'piyushburde24' has an active access key that is 103 days old, which exceeds the recommended rotation threshold of 90 days.",
+    "business_impact": "Long-lived access keys increase the risk of credential exposure. If a key is leaked in code repositories or compromised workstations, attackers can maintain persistent access to the AWS environment.",
+    "console_remediation": "Open the IAM Console, select 'Users', click 'piyushburde24', and go to the 'Security credentials' tab. Under 'Access keys', click 'Create access key' to generate a new key. Update your applications with the new credentials, then return to the console to deactivate and delete the old access key.",
+    "cli_remediation": "aws iam create-access-key --user-name piyushburde24 && aws iam update-access-key --user-name piyushburde24 --access-key-id AKIAIOSFODNN7EXAMPLE --status Inactive && aws iam delete-access-key --user-name piyushburde24 --access-key-id AKIAIOSFODNN7EXAMPLE"
+  },
+  {
+    "id": 12,
+    "explanation": "The IAM user 'piyushburde24' has the 'AdministratorAccess' policy directly attached, granting full administrative privileges over the entire AWS account.",
+    "business_impact": "Directly attaching administrative privileges to a user account violates the principle of least privilege. A compromise of this user account gives an attacker full control over the AWS infrastructure, leading to potential total loss of data and resources.",
+    "console_remediation": "Open the IAM Console, select 'Users', click 'piyushburde24', and navigate to the 'Permissions' tab. Locate the 'AdministratorAccess' policy, click 'Remove', and then attach a policy that grants only the minimum permissions required for the user's job function.",
+    "cli_remediation": "aws iam detach-user-policy --user-name piyushburde24 --policy-arn arn:aws:iam::aws:policy/AdministratorAccess"
+  }
+2026-07-27 11:17:19 | INFO     | Gemini AI analysis completed successfully.
+2026-07-27 11:17:19 | INFO     | Saving AI analysis into database...
+2026-07-27 11:17:19 | INFO     | Database updated successfully.
+2026-07-27 11:17:19 | INFO     | Calculating overall security score...
+2026-07-27 11:17:19 | INFO     | ============================================================
+2026-07-27 11:17:19 | INFO     | Security Summary
+2026-07-27 11:17:19 | INFO     | ============================================================
+2026-07-27 11:17:19 | INFO     | Overall Security Score : 53/100
+2026-07-27 11:17:19 | INFO     | Critical  : 1
+2026-07-27 11:17:19 | INFO     | High      : 1
+2026-07-27 11:17:19 | INFO     | Medium    : 1
+2026-07-27 11:17:19 | INFO     | Low       : 0
+2026-07-27 11:17:19 | INFO     | ============================================================
+2026-07-27 11:17:19 | INFO     | Cloud Scan Finished Successfully
+2026-07-27 11:17:19 | INFO     | ============================================================
+2026-07-27 11:17:19 | INFO     | Database connection closed.
+2026-07-27 11:20:24 | INFO     | ============================================================
+2026-07-27 11:20:24 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-27 11:20:24 | INFO     | ============================================================
+2026-07-27 11:20:24 | INFO     | Starting AWS security scan...
+2026-07-27 11:20:24 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-27 11:20:30 | INFO     | Scan completed. 3 findings discovered.
+2026-07-27 11:20:30 | INFO     | 3 findings saved to SQLite database.
+2026-07-27 11:20:30 | INFO     | Preparing findings for Gemini AI...
+2026-07-27 11:20:30 | INFO     | Sending findings to Gemini AI...
+2026-07-27 11:20:30 | INFO     | Sending request to Gemini API...
+2026-07-27 11:20:30 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 11:20:39 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 11:20:39 | INFO     | Gemini response received successfully.
+2026-07-27 11:20:39 | INFO     | Successfully parsed 3 AI analysis results.
+2026-07-27 11:20:39 | INFO     | Gemini AI analysis completed successfully.
+2026-07-27 11:20:39 | INFO     | Saving AI analysis into database...
+2026-07-27 11:20:39 | INFO     | Database updated successfully.
+2026-07-27 11:20:39 | INFO     | Calculating overall security score...
+2026-07-27 11:20:39 | INFO     | ============================================================
+2026-07-27 11:20:39 | INFO     | Security Summary
+2026-07-27 11:20:39 | INFO     | ============================================================
+2026-07-27 11:20:39 | INFO     | Overall Security Score : 53/100
+2026-07-27 11:20:39 | INFO     | Critical  : 1
+2026-07-27 11:20:39 | INFO     | High      : 1
+2026-07-27 11:20:39 | INFO     | Medium    : 1
+2026-07-27 11:20:39 | INFO     | Low       : 0
+2026-07-27 11:20:39 | INFO     | ============================================================
+2026-07-27 11:20:39 | INFO     | Cloud Scan Finished Successfully
+2026-07-27 11:20:39 | INFO     | ============================================================
+2026-07-27 11:20:39 | INFO     | Database connection closed.
+2026-07-27 11:21:59 | INFO     | ============================================================
+2026-07-27 11:21:59 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-27 11:21:59 | INFO     | ============================================================
+2026-07-27 11:21:59 | INFO     | Starting AWS security scan...
+2026-07-27 11:21:59 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-27 11:22:04 | INFO     | Scan completed. 3 findings discovered.
+2026-07-27 11:22:04 | INFO     | 3 findings saved to SQLite database.
+2026-07-27 11:22:04 | INFO     | Preparing findings for Gemini AI...
+2026-07-27 11:22:04 | INFO     | Sending findings to Gemini AI...
+2026-07-27 11:22:04 | INFO     | Sending request to Gemini API...
+2026-07-27 11:22:04 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 11:22:14 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 11:22:14 | INFO     | Gemini response received successfully.
+2026-07-27 11:22:14 | INFO     | Successfully parsed 3 AI analysis results.
+2026-07-27 11:22:14 | INFO     | Gemini AI analysis completed successfully.
+2026-07-27 11:22:14 | INFO     | Saving AI analysis into database...
+2026-07-27 11:22:14 | INFO     | Database updated successfully.
+2026-07-27 11:22:14 | INFO     | Calculating overall security score...
+2026-07-27 11:22:14 | INFO     | ============================================================
+2026-07-27 11:22:14 | INFO     | Security Summary
+2026-07-27 11:22:14 | INFO     | ============================================================
+2026-07-27 11:22:14 | INFO     | Overall Security Score : 53/100
+2026-07-27 11:22:14 | INFO     | Critical  : 1
+2026-07-27 11:22:14 | INFO     | High      : 1
+2026-07-27 11:22:14 | INFO     | Medium    : 1
+2026-07-27 11:22:14 | INFO     | Low       : 0
+2026-07-27 11:22:14 | INFO     | ============================================================
+2026-07-27 11:22:14 | INFO     | Cloud Scan Finished Successfully
+2026-07-27 11:22:14 | INFO     | ============================================================
+2026-07-27 11:22:14 | INFO     | Database connection closed.

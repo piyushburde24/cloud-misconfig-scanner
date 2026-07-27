@@ -30,5 +30,9 @@ class RiskScoreCalculator:
 
         return {
             "score": score,
+            "critical": counts.get("Critical", 0),
+            "high": counts.get("High", 0),
+            "medium": counts.get("Medium", 0),
+            "low": counts.get("Low", 0),
             "counts": dict(counts),
         }
