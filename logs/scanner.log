@@ -506,3 +506,177 @@ google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message
 2026-07-27 01:12:06 | INFO     | Cloud Scan Finished Successfully
 2026-07-27 01:12:06 | INFO     | ============================================================
 2026-07-27 01:12:06 | INFO     | Database connection closed.
+2026-07-27 10:12:42 | INFO     | ============================================================
+2026-07-27 10:12:42 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-27 10:12:42 | INFO     | ============================================================
+2026-07-27 10:12:42 | INFO     | Starting AWS security scan...
+2026-07-27 10:12:42 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-27 10:12:49 | INFO     | Scan completed. 3 findings discovered.
+2026-07-27 10:12:49 | INFO     | 3 findings saved to SQLite database.
+2026-07-27 10:12:49 | INFO     | Preparing findings for Gemini AI...
+2026-07-27 10:12:49 | INFO     | Sending findings to Gemini AI...
+2026-07-27 10:12:49 | INFO     | Sending request to Gemini API...
+2026-07-27 10:12:49 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 10:12:57 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 10:12:57 | INFO     | Gemini response received successfully.
+2026-07-27 10:12:57 | INFO     | Successfully parsed 3 AI analysis results.
+2026-07-27 10:12:57 | INFO     | Gemini AI analysis completed successfully.
+2026-07-27 10:12:57 | INFO     | Saving AI analysis into database...
+2026-07-27 10:12:57 | INFO     | Database updated successfully.
+2026-07-27 10:12:57 | INFO     | Calculating overall security score...
+2026-07-27 10:12:57 | INFO     | ============================================================
+2026-07-27 10:12:57 | INFO     | Security Summary
+2026-07-27 10:12:57 | INFO     | ============================================================
+2026-07-27 10:12:57 | INFO     | Overall Security Score : 53/100
+2026-07-27 10:12:57 | INFO     | Critical  : 1
+2026-07-27 10:12:57 | INFO     | High      : 1
+2026-07-27 10:12:57 | INFO     | Medium    : 1
+2026-07-27 10:12:57 | INFO     | Low       : 0
+2026-07-27 10:12:57 | INFO     | ============================================================
+2026-07-27 10:12:57 | INFO     | Cloud Scan Finished Successfully
+2026-07-27 10:12:57 | INFO     | ============================================================
+2026-07-27 10:12:57 | INFO     | Database connection closed.
+2026-07-27 10:15:56 | INFO     | ============================================================
+2026-07-27 10:15:56 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-27 10:15:56 | INFO     | ============================================================
+2026-07-27 10:15:56 | INFO     | Starting AWS security scan...
+2026-07-27 10:15:56 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-27 10:16:03 | INFO     | Scan completed. 3 findings discovered.
+2026-07-27 10:16:03 | INFO     | 3 findings saved to SQLite database.
+2026-07-27 10:16:03 | INFO     | Preparing findings for Gemini AI...
+2026-07-27 10:16:03 | INFO     | Sending findings to Gemini AI...
+2026-07-27 10:16:03 | INFO     | Sending request to Gemini API...
+2026-07-27 10:16:03 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 10:16:12 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 10:16:12 | INFO     | Gemini response received successfully.
+2026-07-27 10:16:12 | ERROR    | Failed to parse Gemini JSON response.
+Traceback (most recent call last):
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/ai/gemini_client.py", line 72, in analyze_findings
+    data = json.loads(text)
+  File "/usr/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting ',' delimiter: line 22 column 4 (char 2842)
+2026-07-27 10:16:12 | ERROR    | Raw Gemini Response:
+2026-07-27 10:16:12 | ERROR    | [
+  {
+    "id": 4,
+    "explanation": "The IAM user 'piyushburde24' has console access enabled but does not have Multi-Factor Authentication (MFA) configured, violating AWS security best practices.",
+    "business_impact": "If the user's password is compromised, an unauthorized actor can gain full access to the AWS Management Console, potentially leading to data leakage, resource destruction, or unauthorized charges.",
+    "console_remediation": "Log in to the AWS Management Console, navigate to the IAM service, select 'Users', click on 'piyushburde24', go to the 'Security credentials' tab, and under 'Multi-factor authentication (MFA)', click 'Assign MFA device' and follow the prompts.",
+    "cli_remediation": "aws iam create-virtual-mfa-device --virtual-mfa-device-name piyushburde24-MFA --outfile QRCode.png --bootstrap-method QRCodePNG && aws iam enable-mfa-device --user-name piyushburde24 --serial-number arn:aws:iam::123456789012:mfa/piyushburde24-MFA --authentication-code-1 111111 --authentication-code-2 222222"
+  },
+  {
+    "id": 5,
+    "explanation": "The IAM user 'piyushburde24' has an active access key that is 103 days old, which exceeds the recommended 90-day rotation threshold.",
+    "business_impact": "Long-lived credentials increase the risk of unauthorized access if the keys are accidentally exposed, leaked, or compromised in code repositories or local environments.",
+    "console_remediation": "Navigate to the IAM console, select 'Users', click on 'piyushburde24', go to the 'Security credentials' tab, create a new access key, update your applications with the new credentials, and then deactivate and delete the old access key.",
+    "cli_remediation": "aws iam create-access-key --user-name piyushburde24 && aws iam update-access-key --user-name piyushburde24 --access-key-id AKIAIOSFODNN7EXAMPLE --status Inactive && aws iam delete-access-key --user-name piyushburde24 --access-key-id AKIAIOSFODNN7EXAMPLE"
+  },
+  {
+    "id": 6,
+    "explanation": "The IAM user 'piyushburde24' has the 'AdministratorAccess' managed policy directly attached, granting full administrative privileges over the AWS account.",
+    "business_impact": "Directly attaching administrative privileges violates the principle of least privilege. If this account is compromised, the attacker gains unrestricted control over the entire AWS infrastructure, risking complete data loss and service disruption.",
+    "console_remediation": "Navigate to the IAM console, select 'Users', click on 'piyushburde24', go to the 'Permissions' tab, locate the 'AdministratorAccess' policy, click 'Remove', and then attach a policy that grants only the specific permissions required for the user's role.",
+    "cli_remediation": "aws iam detach-user-policy --user-name piyushburde24 --policy-arn arn:aws:iam::aws:policy/AdministratorAccess"
+  }
+2026-07-27 10:16:12 | INFO     | Gemini AI analysis completed successfully.
+2026-07-27 10:16:12 | INFO     | Saving AI analysis into database...
+2026-07-27 10:16:12 | INFO     | Database updated successfully.
+2026-07-27 10:16:12 | INFO     | Calculating overall security score...
+2026-07-27 10:16:12 | INFO     | ============================================================
+2026-07-27 10:16:12 | INFO     | Security Summary
+2026-07-27 10:16:12 | INFO     | ============================================================
+2026-07-27 10:16:12 | INFO     | Overall Security Score : 53/100
+2026-07-27 10:16:12 | INFO     | Critical  : 1
+2026-07-27 10:16:12 | INFO     | High      : 1
+2026-07-27 10:16:12 | INFO     | Medium    : 1
+2026-07-27 10:16:12 | INFO     | Low       : 0
+2026-07-27 10:16:12 | INFO     | ============================================================
+2026-07-27 10:16:12 | INFO     | Cloud Scan Finished Successfully
+2026-07-27 10:16:12 | INFO     | ============================================================
+2026-07-27 10:16:12 | INFO     | Database connection closed.
+2026-07-27 10:23:32 | INFO     | Sending request to Gemini API...
+2026-07-27 10:23:32 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 10:23:41 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 10:23:41 | INFO     | Gemini response received successfully.
+2026-07-27 10:23:41 | INFO     | Successfully parsed 1 AI analysis results.
+2026-07-27 10:28:23 | INFO     | Sending request to Gemini API...
+2026-07-27 10:28:23 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 10:28:27 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 10:28:27 | INFO     | Gemini response received successfully.
+2026-07-27 10:28:27 | INFO     | Successfully parsed 1 AI analysis results.
+2026-07-27 10:29:24 | INFO     | ============================================================
+2026-07-27 10:29:24 | INFO     | Cloud Misconfiguration Scanner Started
+2026-07-27 10:29:24 | INFO     | ============================================================
+2026-07-27 10:29:24 | INFO     | Starting AWS security scan...
+2026-07-27 10:29:24 | INFO     | Found credentials in shared credentials file: ~/.aws/credentials
+2026-07-27 10:29:31 | INFO     | Scan completed. 3 findings discovered.
+2026-07-27 10:29:31 | INFO     | 3 findings saved to SQLite database.
+2026-07-27 10:29:31 | INFO     | Preparing findings for Gemini AI...
+2026-07-27 10:29:31 | INFO     | Sending findings to Gemini AI...
+2026-07-27 10:29:31 | INFO     | Sending request to Gemini API...
+2026-07-27 10:29:31 | INFO     | AFC is enabled with max remote calls: 10.
+2026-07-27 10:29:45 | INFO     | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-27 10:29:45 | INFO     | Gemini response received successfully.
+2026-07-27 10:29:45 | ERROR    | Failed to parse Gemini JSON response.
+Traceback (most recent call last):
+  File "/home/ubuntu/Projects/cloud-misconfig-scanner/ai/gemini_client.py", line 72, in analyze_findings
+    data = json.loads(text)
+  File "/usr/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting ',' delimiter: line 22 column 4 (char 3128)
+2026-07-27 10:29:45 | ERROR    | Raw Gemini Response:
+2026-07-27 10:29:45 | ERROR    | [
+  {
+    "id": 7,
+    "explanation": "The IAM user 'piyushburde24' has console access enabled but does not have Multi-Factor Authentication (MFA) configured, which violates AWS security best practices.",
+    "business_impact": "Without MFA, the user account is highly vulnerable to credential stuffing, brute-force attacks, and phishing. A compromised account could lead to unauthorized access to AWS resources, data exfiltration, or malicious infrastructure modifications.",
+    "console_remediation": "Sign in to the AWS Management Console, navigate to the IAM service, click on 'Users' in the left navigation pane, select 'piyushburde24', go to the 'Security credentials' tab, locate 'Multi-factor authentication (MFA)', click 'Assign MFA device', and follow the prompts to register a virtual or hardware MFA device.",
+    "cli_remediation": "aws iam create-virtual-mfa-device --virtual-mfa-device-name piyushburde24-MFA --outfile QRCode.png --bootstrap-method QRCodePNG && aws iam enable-mfa-device --user-name piyushburde24 --serial-number arn:aws:iam::123456789012:mfa/piyushburde24-MFA --authentication-code-1 111111 --authentication-code-2 222222"
+  },
+  {
+    "id": 8,
+    "explanation": "The IAM user 'piyushburde24' has an active access key that is 103 days old, which exceeds the recommended rotation period of 90 days.",
+    "business_impact": "Long-lived access keys increase the risk of credential exposure. If a key is leaked or compromised, attackers can maintain persistent programmatic access to the AWS environment until the key is rotated or deleted.",
+    "console_remediation": "Open the IAM Console, select 'Users', click on 'piyushburde24', go to the 'Security credentials' tab, locate the 'Access keys' section, click 'Create access key' to generate a new one, update your applications with the new credentials, then change the status of the old key to 'Inactive' and delete it.",
+    "cli_remediation": "aws iam create-access-key --user-name piyushburde24 && aws iam update-access-key --user-name piyushburde24 --access-key-id AKIAIOSFODNN7EXAMPLE --status Inactive && aws iam delete-access-key --user-name piyushburde24 --access-key-id AKIAIOSFODNN7EXAMPLE"
+  },
+  {
+    "id": 9,
+    "explanation": "The IAM user 'piyushburde24' has the managed 'AdministratorAccess' policy directly attached, granting full access to all AWS services and resources.",
+    "business_impact": "Directly attaching administrative privileges to an IAM user violates the principle of least privilege. If this user's credentials are compromised, the attacker gains full control over the entire AWS account, including billing, data deletion, and resource creation.",
+    "console_remediation": "Navigate to the IAM Console, click 'Users', select 'piyushburde24', go to the 'Permissions' tab, locate the 'AdministratorAccess' policy, click 'Remove', and then attach a custom IAM policy or group membership that grants only the minimum permissions required for the user's job function.",
+    "cli_remediation": "aws iam detach-user-policy --user-name piyushburde24 --policy-arn arn:aws:iam::aws:policy/AdministratorAccess"
+  }
+2026-07-27 10:29:45 | INFO     | Gemini AI analysis completed successfully.
+2026-07-27 10:29:45 | INFO     | Saving AI analysis into database...
+2026-07-27 10:29:45 | INFO     | Database updated successfully.
+2026-07-27 10:29:45 | INFO     | Calculating overall security score...
+2026-07-27 10:29:45 | INFO     | ============================================================
+2026-07-27 10:29:45 | INFO     | Security Summary
+2026-07-27 10:29:45 | INFO     | ============================================================
+2026-07-27 10:29:45 | INFO     | Overall Security Score : 53/100
+2026-07-27 10:29:45 | INFO     | Critical  : 1
+2026-07-27 10:29:45 | INFO     | High      : 1
+2026-07-27 10:29:45 | INFO     | Medium    : 1
+2026-07-27 10:29:45 | INFO     | Low       : 0
+2026-07-27 10:29:45 | INFO     | ============================================================
+2026-07-27 10:29:45 | INFO     | Cloud Scan Finished Successfully
+2026-07-27 10:29:45 | INFO     | ============================================================
+2026-07-27 10:29:45 | INFO     | Database connection closed.
+2026-07-27 10:29:49 | INFO     | Sending request to Gemini API...
+2026-07-27 10:29:49 | INFO     | AFC is enabled with max remote calls: 10.
